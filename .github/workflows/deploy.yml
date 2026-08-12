@@ -1,16 +1,13 @@
 name: Test and Deploy
 
-# 1. When should this run?
 on:
   push:
     branches: ["main"]
 
-# 2. Permissions needed to deploy to Pages
 permissions:
   pages: write
   id-token: write
 
-# 3. What are we doing?
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -20,15 +17,18 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # Step B: Install Node (needed for our testing tool)
+      # Step B: Install Node (use latest supported)
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24'
+        # If you MUST use Node 20 temporarily:
+        env:
+          ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
 
       # Step C: THE GATEKEEPER - Test the HTML syntax
       - name: Check HTML Syntax
-        run: npx htmlhint "*/.html"
+        run: npx htmlhint "**/*.html"
 
       # Step D: Package the files for deployment
       - name: Setup Pages
